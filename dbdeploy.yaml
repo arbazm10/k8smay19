@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprodb
+  labels:
+    app: vprodb
+spec:
+  selector:
+    matchLabels:
+      app: vprodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vprodb
+    spec:
+      containers:
+      - name: vprodb
+        image: arbazm10/vprofiledb:
+          #args:
+          #- "--ignore-db-dir"
+          #- "lost+found"
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: vpro-db-data
+        ports:
+        - name: vprodb-port
+          containerPort: 3306
+        env:
+         - name: MYSQL_ROOT_PASSWORD
+           valueFrom:
+             secretKeyRef:
+               name: app-secret
+               key: db-pass
+      nodeSelector:
+        zone: us-east-1a
+      volumes:
+      - name: vpro-db-data
+        azureDisk:
+          kind: Managed
+          diskName: mysqlDisk
+          diskURI: /subscriptions/b128a61e-6275-47bc-adc9-48095f3ba4c6/resourceGroups/myaks/providers/Microsoft.Compute/disks/mysqlDisk
+          cachingMode: None
+          fsType: ext4
+
+      initContainers:
+        - name: busybox
+          image: busybox:latest
+          args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
+          volumeMounts:
+            - name: vpro-db-data
+              mountPath: /var/lib/mysql

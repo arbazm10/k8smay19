@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: vprodb
-        image: arbazm10/vprofiledb:
+        image: arbazm10/vprofiledb:latest
           #args:
           #- "--ignore-db-dir"
           #- "lost+found"
@@ -33,7 +33,7 @@ spec:
                name: app-secret
                key: db-pass
       nodeSelector:
-        zone: us-east-1a
+        zone: eastus
       volumes:
       - name: vpro-db-data
         azureDisk:

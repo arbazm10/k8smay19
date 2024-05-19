@@ -22,10 +22,17 @@ spec:
           #- "lost+found"
         volumeMounts:
         - mountPath: /var/lib/mysql
-          name: vpro-db-data
+          name: volume
         ports:
         - name: vprodb-port
           containerPort: 3306
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "450m"
+          limits:
+            memory: "700Mi"
+            cpu: "500m"
         env:
          - name: MYSQL_ROOT_PASSWORD
            valueFrom:
@@ -35,18 +42,14 @@ spec:
       nodeSelector:
         zone: eastus
       volumes:
-      - name: vpro-db-data
-        azureDisk:
-          kind: Managed
-          diskName: mysqlDisk
-          diskURI: /subscriptions/b128a61e-6275-47bc-adc9-48095f3ba4c6/resourceGroups/myaks/providers/Microsoft.Compute/disks/mysqlDisk
-          cachingMode: None
-          fsType: ext4
+        - name: volume
+          persistentVolumeClaim:
+            claimName: myakspvc2
 
       initContainers:
         - name: busybox
           image: busybox:latest
           args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
           volumeMounts:
-            - name: vpro-db-data
+            - name: volume
               mountPath: /var/lib/mysql

@@ -23,9 +23,9 @@ spec:
         resources:
           requests:
             memory: "500Mi"
-            cpu: "450m"
+            cpu: "250m"
           limits:
-            memory: "700Mi"
+            memory: "800Mi"
             cpu: "500m"
       initContainers:
       - name: init-mydb

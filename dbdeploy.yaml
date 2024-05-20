@@ -40,7 +40,7 @@ spec:
                name: app-secret
                key: db-pass
       nodeSelector:
-        zone: eastus
+        zone: centralus
       volumes:
         - name: volume
           persistentVolumeClaim:

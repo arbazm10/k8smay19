@@ -25,7 +25,7 @@ spec:
             memory: "500Mi"
             cpu: "250m"
           limits:
-            memory: "800Mi"
+            memory: "600Mi"
             cpu: "500m"
       initContainers:
       - name: init-mydb
